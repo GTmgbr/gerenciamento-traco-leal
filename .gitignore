@@ -46,3 +46,8 @@ desktop.ini
 #Arquivos temporários
 *.tmp
 *.temp
+
+#Ferramentas de IA / desenvolvimento
+.agents/
+.claude/
+.windsurf/
