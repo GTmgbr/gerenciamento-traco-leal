@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Perfil {
+  ADMIN
+  EDITOR
+}
+
+enum TipoDocumento {
+  CONTRATO
+  ATESTADO
+}
+
+model Usuario {
+  id     Int    @id @default(autoincrement())
+  nome   String
+  email  String @unique
+  senha  String
+  perfil Perfil @default(EDITOR)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cliente {
+  id Int @id @default(autoincrement())
+
+  nome String
+
+  logo String
+
+  site String?
+
+  descricao String?
+
+  ativo Boolean @default(true)
+
+  documentos Documento[]
+
+  pecas Peca[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model Categoria {
+  id Int @id @default(autoincrement())
+
+  nome String @unique
+
+  documentos Documento[]
+}
+
+model Peca {
+  id Int @id @default(autoincrement())
+
+  titulo    String
+  slug      String @unique
+  descricao String
+  categoria String
+  ano       Int
+
+  clienteId Int
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+
+  imagens  Imagem[]
+  links    Link[]
+  arquivos Arquivo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Imagem {
+  id Int @id @default(autoincrement())
+
+  legenda String?
+
+  arquivo String
+
+  destaque Boolean @default(false)
+
+  ordem Int @default(1)
+
+  pecaId Int
+
+  peca Peca @relation(fields: [pecaId], references: [id], onDelete: Cascade)
+}
+
+model Link {
+  id Int @id @default(autoincrement())
+
+  titulo String
+  url    String
+
+  pecaId Int
+  peca   Peca @relation(fields: [pecaId], references: [id], onDelete: Cascade)
+}
+
+model Arquivo {
+  id Int @id @default(autoincrement())
+
+  titulo  String
+  arquivo String
+
+  pecaId Int
+  peca   Peca @relation(fields: [pecaId], references: [id], onDelete: Cascade)
+}
+
+model Documento {
+  id Int @id @default(autoincrement())
+
+  titulo String
+
+  tipo TipoDocumento
+
+  ano Int
+
+  arquivo String
+
+  ativo Boolean @default(true)
+
+  clienteId Int
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  categorias Categoria[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}

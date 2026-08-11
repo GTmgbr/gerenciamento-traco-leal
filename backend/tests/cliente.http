@@ -1,0 +1,28 @@
+GET http://localhost:3000/api/clientes
+
+###
+POST http://localhost:3000/api/clientes
+Content-Type: application/json
+
+{
+    "nome": "Embrapa",
+    "logo": "/uploads/clientes/embrapa.png",
+    "site": "https://embrapa.br",
+    "descricao": "Empresa Brasileira de Pesquisa Agropecuária",
+    "ativo": true
+}
+
+### Listar clientes
+GET http://localhost:3000/api/clientes
+
+### Criar cliente SEM token
+POST http://localhost:3000/api/clientes
+Content-Type: application/json
+
+{
+    "nome": "Sebrae",
+    "logo": "/uploads/clientes/sebrae.png",
+    "site": "https://sebrae.com.br",
+    "descricao": "Cliente",
+    "ativo": true
+}
