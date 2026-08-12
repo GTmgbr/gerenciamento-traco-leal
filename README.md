@@ -1,6 +1,6 @@
 # Portfolio Traço Leal
 
-Sistema web desenvolvido para gerenciamento e organização do portfólio interno da agência **Traço Leal Comunicação - LTDA**.
+Sistema web desenvolvido para gerenciamento e organização do portfólio interno da agência **Traço Leal Comunicação - LTDA**. Uma empresa sediada em Itajubá - MG, que há mais de 40 anos presta serviços para organizações públicas e privadas.
 
 A aplicação permite centralizar informações sobre clientes, documentos, peças e seus respectivos arquivos, imagens e links, oferecendo uma interface administrativa para cadastro, edição, visualização e exclusão dos conteúdos.
 
