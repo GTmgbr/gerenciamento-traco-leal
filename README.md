@@ -30,7 +30,6 @@ Instagram da agência: https://www.instagram.com/tracolealcomunicacao/
 
 ![Image](https://github.com/user-attachments/assets/b6926ec9-4ccf-48fb-84f4-617b900011e1)
 
-
 ## 📌 Sobre o projeto
 
 O projeto surgiu da necessidade real de organizar, em um único sistema, os materiais produzidos pela agência. Anteriormente, informações como contratos, atestados, peças gráficas, imagens, arquivos e links poderiam ficar distribuídas em diferentes locais. A proposta do sistema é fornecer um ambiente centralizado para que os administradores possam cadastrar e consultar esses conteúdos de forma organizada.
