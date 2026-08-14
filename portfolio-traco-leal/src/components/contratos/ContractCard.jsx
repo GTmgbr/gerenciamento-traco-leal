@@ -1,10 +1,54 @@
+import getBackendUrl from "../../services/url";
+
 function ContractCard({ contrato }) {
+
+    /*
+     * Arquivo PDF
+     *
+     * Se já for uma URL/caminho completo,
+     * mantém como está.
+     *
+     * Se for apenas o nome do arquivo vindo
+     * da API, monta a URL do backend.
+     */
+    const arquivoUrl = contrato.arquivo
+        ? contrato.arquivo.startsWith("http")
+            ? contrato.arquivo
+            : contrato.arquivo.startsWith("/uploads")
+                ? getBackendUrl(contrato.arquivo)
+                : getBackendUrl(
+                    `/uploads/documentos/${contrato.arquivo}`
+                )
+        : null;
+
+
+    /*
+     * Logo
+     *
+     * Dados antigos:
+     * contrato.logo
+     *
+     * Dados novos da API:
+     * contrato.cliente.logo
+     */
+    const logo = contrato.cliente?.logo || contrato.logo;
+
+    const logoUrl = logo
+        ? logo.startsWith("http")
+            ? logo
+            : logo.startsWith("/uploads")
+                ? getBackendUrl(logo)
+                : getBackendUrl(
+                    `/uploads/clientes/${logo}`
+                )
+        : null;
+
 
     return (
 
         <a
 
-            href={contrato.arquivo}
+            href={arquivoUrl || "#"}
 
             target="_blank"
 
@@ -12,21 +56,46 @@ function ContractCard({ contrato }) {
 
             className="group w-60"
 
+            onClick={(e) => {
+
+                if (!arquivoUrl) {
+
+                    e.preventDefault();
+
+                }
+
+            }}
+
         >
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow transition duration-300 hover:-translate-y-2 hover:shadow-xl">
 
                 <div className="flex justify-center items-center h-36">
 
-                    <img
+                    {logoUrl ? (
 
-                        src={contrato.logo}
+                        <img
 
-                        alt={contrato.titulo}
+                            src={logoUrl}
 
-                        className="max-h-24 object-contain"
+                            alt={
+                                contrato.cliente?.nome ||
+                                contrato.titulo
+                            }
 
-                    />
+                            className="max-h-24 object-contain"
+
+                        />
+
+                    ) : (
+
+                        <div className="text-gray-400">
+
+                            Sem logo
+
+                        </div>
+
+                    )}
 
                 </div>
 
@@ -45,6 +114,16 @@ function ContractCard({ contrato }) {
                     {contrato.ano}
 
                 </p>
+
+                {contrato.cliente?.nome && (
+
+                    <p className="text-sm text-[#666666] mt-1">
+
+                        {contrato.cliente.nome}
+
+                    </p>
+
+                )}
 
             </div>
 

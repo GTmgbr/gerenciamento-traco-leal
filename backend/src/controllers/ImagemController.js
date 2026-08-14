@@ -6,13 +6,21 @@ class ImagemController {
 
         try {
 
-            const imagens = await ImagemService.listarPorPeca(
+            const imagens =
+                await ImagemService.listarPorPeca(
+                    req.params.pecaId
+                );
 
-                req.params.pecaId
+            const resultado = imagens.map((imagem) => ({
 
-            );
+                ...imagem,
 
-            return res.json(imagens);
+                url:
+                    `${process.env.APP_URL}/uploads/imagens-pecas/${imagem.arquivo}`
+
+            }));
+
+            return res.json(resultado);
 
         }
 
@@ -38,21 +46,27 @@ class ImagemController {
 
                 titulo: req.body.titulo,
 
-                destaque: req.body.destaque === "true",
+                destaque:
+                    req.body.destaque === "true",
 
                 arquivo: req.file.filename
 
             };
 
-            const imagem = await ImagemService.criar(
+            const imagem =
+                await ImagemService.criar(
+                    req.params.pecaId,
+                    dados
+                );
 
-                req.params.pecaId,
+            return res.status(201).json({
 
-                dados
+                ...imagem,
 
-            );
+                url:
+                    `${process.env.APP_URL}/uploads/imagens-pecas/${imagem.arquivo}`
 
-            return res.status(201).json(imagem);
+            });
 
         }
 
@@ -74,7 +88,9 @@ class ImagemController {
 
         try {
 
-            await ImagemService.excluir(req.params.id);
+            await ImagemService.excluir(
+                req.params.id
+            );
 
             return res.status(204).send();
 

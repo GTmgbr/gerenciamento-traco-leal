@@ -19,7 +19,7 @@ class DocumentoController {
             return res.status(500).json({
 
                 erro: "Erro ao listar documentos."
-
+ 
             });
 
         }

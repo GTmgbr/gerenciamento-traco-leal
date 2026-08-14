@@ -8,6 +8,18 @@ export async function listarPecas() {
 
 }
 
+
+export async function buscarPecaPorSlug(slug) {
+
+    const response = await api.get(
+        `/pecas/slug/${slug}`
+    );
+
+    return response.data;
+
+}
+
+
 export async function criarPeca(peca, token) {
 
     const response = await api.post(
@@ -32,7 +44,12 @@ export async function criarPeca(peca, token) {
 
 }
 
-export async function atualizarPeca(id, peca, token) {
+
+export async function atualizarPeca(
+    id,
+    peca,
+    token
+) {
 
     const response = await api.put(
 
@@ -56,6 +73,7 @@ export async function atualizarPeca(id, peca, token) {
 
 }
 
+
 export async function excluirPeca(id, token) {
 
     await api.delete(
@@ -76,9 +94,12 @@ export async function excluirPeca(id, token) {
 
 }
 
+
 export async function buscarPeca(id) {
 
-    const response = await api.get(`/pecas/${id}`);
+    const response = await api.get(
+        `/pecas/${id}`
+    );
 
     return response.data;
 

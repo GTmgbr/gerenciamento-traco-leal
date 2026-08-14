@@ -7,33 +7,66 @@ import {
     FaDownload
 } from "react-icons/fa";
 
+import getBackendUrl from "../../services/url";
+
 function FilesSection({ arquivos }) {
 
-    if (!arquivos || arquivos.length === 0) return null;
+    if (!arquivos || arquivos.length === 0) {
+        return null;
+    }
 
     function getIcon(url) {
 
-        const extensao = url.split(".").pop().toLowerCase();
+        const extensao = url
+            .split("?")[0]
+            .split(".")
+            .pop()
+            .toLowerCase();
 
         switch (extensao) {
 
             case "pdf":
-                return <FaFilePdf size={30} color="#d32f2f" />;
+                return (
+                    <FaFilePdf
+                        size={30}
+                        color="#d32f2f"
+                    />
+                );
 
             case "doc":
             case "docx":
-                return <FaFileWord size={30} color="#1565c0" />;
+                return (
+                    <FaFileWord
+                        size={30}
+                        color="#1565c0"
+                    />
+                );
 
             case "ppt":
             case "pptx":
-                return <FaFilePowerpoint size={30} color="#ef6c00" />;
+                return (
+                    <FaFilePowerpoint
+                        size={30}
+                        color="#ef6c00"
+                    />
+                );
 
             case "xls":
             case "xlsx":
-                return <FaFileExcel size={30} color="#2e7d32" />;
+                return (
+                    <FaFileExcel
+                        size={30}
+                        color="#2e7d32"
+                    />
+                );
 
             default:
-                return <FaFileAlt size={30} color="#666666" />;
+                return (
+                    <FaFileAlt
+                        size={30}
+                        color="#666666"
+                    />
+                );
 
         }
 
@@ -64,24 +97,25 @@ function FilesSection({ arquivos }) {
             <div
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                    gridTemplateColumns:
+                        "repeat(auto-fit, minmax(300px, 1fr))",
                     gap: "25px"
                 }}
             >
 
                 {
 
-                    arquivos.map((arquivo, index) => (
+                    arquivos.map((arquivo) => (
 
                         <a
 
-                            key={index}
+                            key={arquivo.id}
 
-                            href={arquivo.url}
-
-                            target="_blank"
-
-                            rel="noreferrer"
+                            href={
+                                getBackendUrl(
+                                    `/api/arquivos/${arquivo.id}/download`
+                                )
+                            }
 
                             style={{
 
@@ -105,23 +139,34 @@ function FilesSection({ arquivos }) {
 
                                 transition: ".3s",
 
-                                boxShadow: "0 4px 12px rgba(0,0,0,.05)"
+                                boxShadow:
+                                    "0 4px 12px rgba(0,0,0,.05)"
 
                             }}
 
                             onMouseEnter={(e) => {
 
-                                e.currentTarget.style.transform = "translateY(-4px)";
-                                e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,.12)";
-                                e.currentTarget.style.borderColor = "#b91c1c";
+                                e.currentTarget.style.transform =
+                                    "translateY(-4px)";
+
+                                e.currentTarget.style.boxShadow =
+                                    "0 10px 25px rgba(0,0,0,.12)";
+
+                                e.currentTarget.style.borderColor =
+                                    "#b91c1c";
 
                             }}
 
                             onMouseLeave={(e) => {
 
-                                e.currentTarget.style.transform = "translateY(0)";
-                                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.05)";
-                                e.currentTarget.style.borderColor = "#dddddd";
+                                e.currentTarget.style.transform =
+                                    "translateY(0)";
+
+                                e.currentTarget.style.boxShadow =
+                                    "0 4px 12px rgba(0,0,0,.05)";
+
+                                e.currentTarget.style.borderColor =
+                                    "#dddddd";
 
                             }}
 
@@ -135,7 +180,7 @@ function FilesSection({ arquivos }) {
                                 }}
                             >
 
-                                {getIcon(arquivo.url)}
+                                {getIcon(arquivo.arquivo)}
 
                                 <div>
 

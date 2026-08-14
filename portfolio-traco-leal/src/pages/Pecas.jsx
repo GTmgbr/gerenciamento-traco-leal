@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Hero from "../components/Hero";
 import Navbar from "../components/Navbar";
@@ -9,9 +9,11 @@ import CategoryFilter from "../components/pecas/CategoryFilter";
 import PieceGrid from "../components/pecas/PieceGrid";
 import YearFilter from "../components/pecas/YearFilter";
 
-import pieces from "../data/pieces";
+import { listarPecas } from "../services/pecas";
 
 function Pecas() {
+
+    const [pieces, setPieces] = useState([]);
 
     const [search, setSearch] = useState("");
 
@@ -21,32 +23,92 @@ function Pecas() {
 
     const [toYear, setToYear] = useState(2030);
 
+    const [loading, setLoading] = useState(true);
+
+    const [erro, setErro] = useState(false);
+
+
+    useEffect(() => {
+
+        async function carregarPecas() {
+
+            try {
+
+                setLoading(true);
+
+                const dados = await listarPecas();
+
+                setPieces(dados);
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Erro ao carregar peças:",
+                    error
+                );
+
+                setErro(true);
+
+            }
+
+            finally {
+
+                setLoading(false);
+
+            }
+
+        }
+
+        carregarPecas();
+
+    }, []);
+
+
     const filteredPieces = useMemo(() => {
 
-    return [...pieces]
+        return [...pieces]
 
-        .sort((a, b) => a.titulo.localeCompare(b.titulo))
+            .sort((a, b) =>
+                a.titulo.localeCompare(b.titulo)
+            )
 
-        .filter((item) => {
+            .filter((item) => {
 
-            const byName = item.titulo
-                .toLowerCase()
-                .includes(search.toLowerCase());
+                const byName =
+                    item.titulo
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
 
-            const byCategory =
-                category === "Todos"
-                ||
-                item.categoria === category;
 
-            const byYear =
-                item.ano >= fromYear &&
-                item.ano <= toYear;
+                const byCategory =
+                    category === "Todos"
+                    ||
+                    item.categoria === category;
 
-            return byName && byCategory && byYear;
 
-        });
+                const byYear =
+                    item.ano >= fromYear &&
+                    item.ano <= toYear;
 
-    }, [search, category, fromYear, toYear]);
+
+                return (
+                    byName &&
+                    byCategory &&
+                    byYear
+                );
+
+            });
+
+    }, [
+        pieces,
+        search,
+        category,
+        fromYear,
+        toYear
+    ]);
+
 
     return (
 
@@ -56,11 +118,21 @@ function Pecas() {
 
             <Navbar />
 
+
             <main className="py-14">
+
 
                 {/* Cabeçalho */}
 
-                <div className="text-center" style={{padding: "40px 0", marginTop: "50px", color: "#333333", marginBottom: "50px"}}>
+                <div
+                    className="text-center"
+                    style={{
+                        padding: "40px 0",
+                        marginTop: "50px",
+                        color: "#333333",
+                        marginBottom: "50px"
+                    }}
+                >
 
                     <h2 className="text-3xl font-bold mb-8 mt-8">
 
@@ -70,9 +142,11 @@ function Pecas() {
 
                 </div>
 
+
                 {/* Área principal */}
 
                 <div className="max-w-[1400px] mx-auto mt-12 px-6">
+
 
                     {/* Pesquisa */}
 
@@ -80,6 +154,7 @@ function Pecas() {
                         value={search}
                         onChange={setSearch}
                     />
+
 
                     {/* Ano */}
 
@@ -95,30 +170,79 @@ function Pecas() {
 
                     />
 
-                    {/* Combobox */}
+
+                    {/* Categoria */}
 
                     <div className="mt-6">
 
                         <CategoryFilter
+
                             value={category}
+
                             onChange={setCategory}
+
                         />
 
                     </div>
+
 
                     {/* Cards */}
 
                     <div className="mt-14">
 
-                        <PieceGrid
-                            pieces={filteredPieces}
-                        />
+                        {loading && (
+
+                            <p className="text-center text-[#555555]">
+
+                                Carregando peças...
+
+                            </p>
+
+                        )}
+
+
+                        {erro && (
+
+                            <p className="text-center text-red-600">
+
+                                Não foi possível carregar as peças.
+
+                            </p>
+
+                        )}
+
+
+                        {!loading &&
+                            !erro &&
+                            filteredPieces.length === 0 && (
+
+                                <p className="text-center text-[#555555]">
+
+                                    Nenhuma peça encontrada.
+
+                                </p>
+
+                            )
+                        }
+
+
+                        {!loading &&
+                            !erro &&
+                            filteredPieces.length > 0 && (
+
+                                <PieceGrid
+                                    pieces={filteredPieces}
+                                />
+
+                            )
+                        }
 
                     </div>
 
                 </div>
 
             </main>
+
 
             <Footer />
 

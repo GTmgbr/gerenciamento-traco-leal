@@ -8,6 +8,8 @@ import {
 
 } from "react-icons/fa";
 
+import getBackendUrl from "../../../services/url";
+
 function DocumentoRow({
 
     documento,
@@ -20,7 +22,9 @@ function DocumentoRow({
 
     const urlArquivo =
 
-        `http://localhost:3000/uploads/documentos/${documento.arquivo}`;
+        getBackendUrl(
+            `/uploads/documentos/${documento.arquivo}`
+        );
 
     return (
 

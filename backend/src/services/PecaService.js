@@ -9,40 +9,123 @@ class PecaService {
         return prisma.peca.findMany({
 
             include: {
+
                 cliente: true
+
             },
 
             orderBy: {
+
                 titulo: "asc"
+
             }
 
         });
 
     }
+
 
     async buscar(id) {
 
         return prisma.peca.findUnique({
 
             where: {
+
                 id: Number(id)
+
             },
 
             include: {
 
                 cliente: true,
 
-                imagens: true,
+                imagens: {
 
-                links: true,
+                    orderBy: {
 
-                arquivos: true
+                        ordem: "asc"
+
+                    }
+
+                },
+
+                links: {
+
+                    orderBy: {
+
+                        id: "asc"
+
+                    }
+
+                },
+
+                arquivos: {
+
+                    orderBy: {
+
+                        id: "asc"
+
+                    }
+
+                }
 
             }
 
         });
 
     }
+
+
+    async buscarPorSlug(slug) {
+
+        return prisma.peca.findUnique({
+
+            where: {
+
+                slug: slug
+
+            },
+
+            include: {
+
+                cliente: true,
+
+                imagens: {
+
+                    orderBy: {
+
+                        ordem: "asc"
+
+                    }
+
+                },
+
+                links: {
+
+                    orderBy: {
+
+                        id: "asc"
+
+                    }
+
+                },
+
+                arquivos: {
+
+                    orderBy: {
+
+                        id: "asc"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
 
     async criar(dados) {
 
@@ -81,6 +164,7 @@ class PecaService {
         });
 
     }
+
 
     async atualizar(id, dados) {
 
@@ -125,6 +209,7 @@ class PecaService {
         });
 
     }
+
 
     async excluir(id) {
 

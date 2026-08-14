@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import Hero from "../components/Hero";
@@ -7,15 +8,101 @@ import ImageGallery from "../components/pecas/ImageGallery";
 import LinksSection from "../components/pecas/LinksSection";
 import FilesSection from "../components/pecas/FilesSection";
 
-import pieces from "../data/pieces";
+import { buscarPecaPorSlug } from "../services/pecas";
+import getBackendUrl from "../services/url";
 
 function PecaDetalhe() {
 
     const { slug } = useParams();
 
-    const piece = pieces.find((item) => item.slug === slug);
+    const [piece, setPiece] = useState(null);
 
-    if (!piece) {
+    const [carregando, setCarregando] = useState(true);
+
+    const [erro, setErro] = useState(false);
+
+
+    useEffect(() => {
+
+        async function carregarPeca() {
+
+            try {
+
+                setCarregando(true);
+
+                setErro(false);
+
+                const dados =
+                    await buscarPecaPorSlug(slug);
+
+                setPiece(dados);
+
+            }
+
+            catch (erro) {
+
+                console.error(
+                    "Erro ao carregar peça:",
+                    erro
+                );
+
+                setErro(true);
+
+            }
+
+            finally {
+
+                setCarregando(false);
+
+            }
+
+        }
+
+        carregarPeca();
+
+    }, [slug]);
+
+
+    if (carregando) {
+
+        return (
+
+            <>
+
+                <Hero />
+
+                <Navbar />
+
+                <main
+                    style={{
+                        padding: "120px 0",
+                        textAlign: "center"
+                    }}
+                >
+
+                    <p
+                        style={{
+                            color: "#666666",
+                            fontSize: "20px"
+                        }}
+                    >
+
+                        Carregando peça...
+
+                    </p>
+
+                </main>
+
+                <Footer />
+
+            </>
+
+        );
+
+    }
+
+
+    if (erro || !piece) {
 
         return (
 
@@ -54,6 +141,21 @@ function PecaDetalhe() {
 
                     </p>
 
+                    <Link
+                        to="/pecas"
+                        style={{
+                            display: "inline-block",
+                            marginTop: "30px",
+                            color: "#b91c1c",
+                            fontWeight: "600",
+                            textDecoration: "none"
+                        }}
+                    >
+
+                        ← Voltar para Peças
+
+                    </Link>
+
                 </main>
 
                 <Footer />
@@ -63,6 +165,43 @@ function PecaDetalhe() {
         );
 
     }
+
+
+    /*
+        URL base para as imagens cadastradas
+        no banco de dados.
+    */
+
+    const imagens = (piece.imagens || []).map(
+
+        (imagem) =>
+            getBackendUrl(
+                `/uploads/imagens/${imagem.arquivo}`
+            )
+
+    );
+
+
+    /*
+        Prepara os arquivos para o componente
+        FilesSection.
+    */
+
+    const arquivos = (piece.arquivos || []).map(
+
+        (arquivo) => ({
+
+            ...arquivo,
+
+            url:
+                getBackendUrl(
+                    `/uploads/arquivos-pecas/${arquivo.arquivo}`
+                )
+
+        })
+
+    );
+
 
     return (
 
@@ -75,6 +214,7 @@ function PecaDetalhe() {
             <main
                 style={{
                     width: "1200px",
+                    maxWidth: "90%",
                     margin: "70px auto",
                     color: "#333333"
                 }}
@@ -96,6 +236,7 @@ function PecaDetalhe() {
 
                 </Link>
 
+
                 {/* TÍTULO */}
 
                 <h1
@@ -111,6 +252,7 @@ function PecaDetalhe() {
 
                 </h1>
 
+
                 {/* INFORMAÇÕES */}
 
                 <div
@@ -118,35 +260,51 @@ function PecaDetalhe() {
                         display: "flex",
                         gap: "50px",
                         marginBottom: "50px",
-                        fontSize: "18px"
+                        fontSize: "18px",
+                        flexWrap: "wrap"
                     }}
                 >
 
                     <div>
 
-                        <strong>Cliente</strong>
+                        <strong>
+                            Cliente
+                        </strong>
 
-                        <p>{piece.cliente}</p>
-
-                    </div>
-
-                    <div>
-
-                        <strong>Categoria</strong>
-
-                        <p>{piece.categoria}</p>
+                        <p>
+                            {piece.cliente?.nome || "Não informado"}
+                        </p>
 
                     </div>
 
+
                     <div>
 
-                        <strong>Ano</strong>
+                        <strong>
+                            Categoria
+                        </strong>
 
-                        <p>{piece.ano}</p>
+                        <p>
+                            {piece.categoria}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Ano
+                        </strong>
+
+                        <p>
+                            {piece.ano}
+                        </p>
 
                     </div>
 
                 </div>
+
 
                 {/* DESCRIÇÃO */}
 
@@ -182,36 +340,39 @@ function PecaDetalhe() {
 
                 </section>
 
-                {/* IMAGEM PRINCIPAL */}
 
-                <section
-                    style={{
-                        marginBottom: "80px"
-                    }}
-                >
+                {/* GALERIA */}
 
-                </section>
+                {imagens.length > 0 && (
 
-                <ImageGallery
+                    <ImageGallery
 
-                    imagens={piece.imagens}
+                        imagens={imagens}
 
-                    titulo={piece.titulo}
+                        titulo={piece.titulo}
 
-                />
+                    />
+
+                )}
+
+
+                {/* LINKS */}
 
                 <LinksSection
 
-                    links={piece.links}
+                    links={piece.links || []}
 
                 />
+
+
+                {/* ARQUIVOS */}
 
                 <FilesSection
 
-                    arquivos={piece.arquivos}
+                    arquivos={arquivos}
 
                 />
-                
+
             </main>
 
             <Footer />

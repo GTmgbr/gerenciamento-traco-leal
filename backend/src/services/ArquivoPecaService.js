@@ -9,16 +9,38 @@ class ArquivoPecaService {
         return await prisma.arquivo.findMany({
 
             where: {
-                pecaId: Number(pecaId)
+
+                pecaId:
+                    Number(pecaId)
+
             },
 
             orderBy: {
+
                 id: "asc"
+
             }
 
         });
 
     }
+
+
+    async buscar(id) {
+
+        return await prisma.arquivo.findUnique({
+
+            where: {
+
+                id:
+                    Number(id)
+
+            }
+
+        });
+
+    }
+
 
     async criar(dados) {
 
@@ -26,14 +48,19 @@ class ArquivoPecaService {
 
             data: {
 
-                titulo: dados.titulo,
+                titulo:
+                    dados.titulo,
 
-                arquivo: dados.arquivo,
+                arquivo:
+                    dados.arquivo,
 
                 peca: {
 
                     connect: {
-                        id: Number(dados.pecaId)
+
+                        id:
+                            Number(dados.pecaId)
+
                     }
 
                 }
@@ -44,12 +71,16 @@ class ArquivoPecaService {
 
     }
 
+
     async excluir(id) {
 
         return await prisma.arquivo.delete({
 
             where: {
-                id: Number(id)
+
+                id:
+                    Number(id)
+
             }
 
         });
@@ -57,5 +88,6 @@ class ArquivoPecaService {
     }
 
 }
+
 
 module.exports = new ArquivoPecaService();

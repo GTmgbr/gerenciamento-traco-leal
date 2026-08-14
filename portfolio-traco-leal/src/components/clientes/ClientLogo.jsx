@@ -1,10 +1,18 @@
-function ClientLogo({ cliente, index }) {
+import getBackendUrl from "../../services/url";
+
+function ClientLogo({ cliente }) {
+
+    const logoUrl = cliente.logo
+        ? getBackendUrl(
+            `/uploads/clientes/${cliente.logo}`
+        )
+        : null;
 
     return (
 
         <div
-
             style={{
+                color: "#333333",
                 width: "340px",
                 height: "220px",
 
@@ -15,55 +23,50 @@ function ClientLogo({ cliente, index }) {
 
                 cursor: "pointer",
 
-                transition: "0.5s",
-
-                
+                transition: "0.5s"
             }}
-
         >
 
-            <img
+            {logoUrl && (
 
-                src={cliente.logo}
+                <img
+                    src={logoUrl}
+                    alt={cliente.nome}
+                    style={{
+                        maxWidth: "340px",
+                        maxHeight: "210px",
 
-                alt={cliente.nome}
+                        objectFit: "contain",
 
-                style={{
-                    marginLeft: "95px",
-                    maxWidth: "340px",
-                    maxHeight: "210px",
+                        filter: "grayscale(100%)",
 
-                    objectFit: "contain",
+                        opacity: "0.7",
 
-                    filter: "grayscale(100%)",
+                        transition: "0.5s"
+                    }}
 
-                    opacity: "0.7",
+                    onMouseEnter={(e) => {
 
-                    transition: "0.5s"
-                }}
+                        e.target.style.filter = "grayscale(0%)";
+                        e.target.style.opacity = "1";
+                        e.target.style.transform = "scale(1.10";
 
-                onMouseEnter={(e) => {
+                    }}
 
-                    e.target.style.filter = "grayscale(0%)";
-                    e.target.style.opacity = "1";
-                    e.target.style.transform = "scale(1.10)";
+                    onMouseLeave={(e) => {
 
-                }}
+                        e.target.style.filter = "grayscale(100%)";
+                        e.target.style.opacity = "0.7";
+                        e.target.style.transform = "scale(1)";
 
-                onMouseLeave={(e) => {
+                    }}
+                />
 
-                    e.target.style.filter = "grayscale(100%)";
-                    e.target.style.opacity = "0.7";
-                    e.target.style.transform = "scale(1)";
-
-                }}
-
-            />
+            )}
 
             <p
                 style={{
                     marginTop: "12px",
-                    marginLeft: "95px",
                     fontSize: "16px",
                     fontWeight: "500",
                     color: "#333333",

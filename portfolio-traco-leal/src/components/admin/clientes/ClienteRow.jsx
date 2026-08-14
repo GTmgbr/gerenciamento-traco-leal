@@ -10,11 +10,15 @@ import {
 
 } from "react-icons/fa";
 
+import getBackendUrl from "../../../services/url";
+
 function ClienteRow({ cliente, onEditar, onExcluir }) {
 
     const logo = cliente.logo
 
-        ? `http://localhost:3000/uploads/clientes/${cliente.logo}`
+        ? getBackendUrl(
+            `/uploads/clientes/${cliente.logo}`
+        )
 
         : null;
 
@@ -117,10 +121,15 @@ function ClienteRow({ cliente, onEditar, onExcluir }) {
                         <a
 
                             href={
+
                                 cliente.site.startsWith("http://") ||
+
                                 cliente.site.startsWith("https://")
+
                                     ? cliente.site
+
                                     : `https://${cliente.site}`
+
                             }
 
                             target="_blank"

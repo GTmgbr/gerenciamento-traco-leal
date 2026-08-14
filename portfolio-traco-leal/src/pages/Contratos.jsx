@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Hero from "../components/Hero";
 import Navbar from "../components/Navbar";
@@ -9,9 +9,11 @@ import ContractGrid from "../components/contratos/ContractGrid";
 import YearFilter from "../components/contratos/YearFilter";
 import Footer from "../components/Footer";
 
-import contracts from "../data/contracts";
+import { listarDocumentos } from "../services/documentos";
 
 function Contratos() {
+
+    const [documentos, setDocumentos] = useState([]);
 
     const [search, setSearch] = useState("");
 
@@ -21,32 +23,115 @@ function Contratos() {
 
     const [toYear, setToYear] = useState(2030);
 
+    const [carregando, setCarregando] = useState(true);
+
+    const [erro, setErro] = useState("");
+
+    useEffect(() => {
+
+        async function carregarDocumentos() {
+
+            try {
+
+                setCarregando(true);
+
+                const dados = await listarDocumentos();
+
+                setDocumentos(dados);
+
+            }
+
+            catch (erro) {
+
+                console.error(erro);
+
+                setErro(
+                    "Não foi possível carregar os documentos."
+                );
+
+            }
+
+            finally {
+
+                setCarregando(false);
+
+            }
+
+        }
+
+        carregarDocumentos();
+
+    }, []);
+
+    const contratos = useMemo(() => {
+
+        return documentos.filter(
+            (documento) =>
+                documento.tipo === "CONTRATO" &&
+                documento.ativo
+        );
+
+    }, [documentos]);
+
+    const categorias = useMemo(() => {
+
+        const nomes = contratos.flatMap(
+            (documento) =>
+                documento.categorias?.map(
+                    (categoria) => categoria.nome
+                ) || []
+        );
+
+        return [
+            "Todos",
+            ...new Set(nomes)
+        ];
+
+    }, [contratos]);
+
     const filteredContracts = useMemo(() => {
 
-    return [...contracts]
+        return [...contratos]
 
-        .sort((a, b) => a.titulo.localeCompare(b.titulo))
+            .sort((a, b) =>
+                a.titulo.localeCompare(b.titulo)
+            )
 
-        .filter((item) => {
+            .filter((item) => {
 
-            const byName = item.titulo
-                .toLowerCase()
-                .includes(search.toLowerCase());
+                const byName =
+                    item.titulo
+                        .toLowerCase()
+                        .includes(
+                            search.toLowerCase()
+                        );
 
-            const byCategory =
-                category === "Todos"
-                ||
-                item.categoria === category;
+                const byCategory =
+                    category === "Todos" ||
+                    item.categorias?.some(
+                        (categoria) =>
+                            categoria.nome === category
+                    );
 
-            const byYear =
-                item.ano >= fromYear &&
-                item.ano <= toYear;
+                const byYear =
+                    item.ano >= fromYear &&
+                    item.ano <= toYear;
 
-            return byName && byCategory && byYear;
+                return (
+                    byName &&
+                    byCategory &&
+                    byYear
+                );
 
-        });
+            });
 
-    }, [search, category, fromYear, toYear]);
+    }, [
+        contratos,
+        search,
+        category,
+        fromYear,
+        toYear
+    ]);
 
     return (
 
@@ -60,7 +145,15 @@ function Contratos() {
 
                 {/* Cabeçalho */}
 
-                <div className="text-center" style={{padding: "40px 0", marginTop: "50px", color: "#333333", marginBottom: "50px"}}>
+                <div
+                    className="text-center"
+                    style={{
+                        padding: "40px 0",
+                        marginTop: "50px",
+                        color: "#333333",
+                        marginBottom: "50px"
+                    }}
+                >
 
                     <h2 className="text-3xl font-bold mb-8 mt-8">
 
@@ -74,47 +167,76 @@ function Contratos() {
 
                 <div className="max-w-[1400px] mx-auto mt-12 px-6">
 
-                    {/* Pesquisa */}
+                    {carregando && (
 
-                    <SearchBar
-                        value={search}
-                        onChange={setSearch}
-                    />
+                        <p className="text-center text-gray-500">
 
-                    {/* Ano */}
+                            Carregando contratos...
 
-                    <YearFilter
+                        </p>
 
-                        fromYear={fromYear}
+                    )}
 
-                        toYear={toYear}
+                    {erro && (
 
-                        onFromChange={setFromYear}
+                        <p className="text-center text-red-600">
 
-                        onToChange={setToYear}
+                            {erro}
 
-                    />
+                        </p>
 
-                    {/* Combobox */}
+                    )}
 
-                    <div className="mt-6">
+                    {!carregando && !erro && (
 
-                        <CategoryFilter
-                            value={category}
-                            onChange={setCategory}
-                        />
+                        <>
 
-                    </div>
+                            {/* Pesquisa */}
 
-                    {/* Cards */}
+                            <SearchBar
+                                value={search}
+                                onChange={setSearch}
+                            />
 
-                    <div className="mt-14">
+                            {/* Ano */}
 
-                        <ContractGrid
-                            contratos={filteredContracts}
-                        />
+                            <YearFilter
 
-                    </div>
+                                fromYear={fromYear}
+
+                                toYear={toYear}
+
+                                onFromChange={setFromYear}
+
+                                onToChange={setToYear}
+
+                            />
+
+                            {/* Categoria */}
+
+                            <div className="mt-6">
+
+                                <CategoryFilter
+                                    value={category}
+                                    onChange={setCategory}
+                                    categorias={categorias}
+                                />
+
+                            </div>
+
+                            {/* Cards */}
+
+                            <div className="mt-14">
+
+                                <ContractGrid
+                                    contratos={filteredContracts}
+                                />
+
+                            </div>
+
+                        </>
+
+                    )}
 
                 </div>
 

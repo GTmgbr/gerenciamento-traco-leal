@@ -16,7 +16,8 @@ class ImagemPecaController {
 
                 ...imagem,
 
-                url: `http://localhost:3000/uploads/imagens/${imagem.arquivo}`
+                url:
+                    `${process.env.APP_URL}/uploads/imagens/${imagem.arquivo}`
 
             }));
 
@@ -44,25 +45,32 @@ class ImagemPecaController {
 
             const dados = {
 
-                pecaId: Number(req.params.pecaId),
+                pecaId:
+                    Number(req.params.pecaId),
 
-                legenda: req.body.legenda || "",
+                legenda:
+                    req.body.legenda || "",
 
-                destaque: req.body.destaque === "true",
+                destaque:
+                    req.body.destaque === "true",
 
-                ordem: Number(req.body.ordem || 0),
+                ordem:
+                    Number(req.body.ordem || 0),
 
-                arquivo: req.file.filename
+                arquivo:
+                    req.file.filename
 
             };
 
-            const imagem = await ImagemPecaService.criar(dados);
+            const imagem =
+                await ImagemPecaService.criar(dados);
 
             return res.status(201).json({
 
                 ...imagem,
 
-                url: `http://localhost:3000/uploads/imagens/${imagem.arquivo}`
+                url:
+                    `${process.env.APP_URL}/uploads/imagens/${imagem.arquivo}`
 
             });
 
@@ -112,4 +120,4 @@ class ImagemPecaController {
 
 }
 
-module.exports = new ImagemPecaController();
+module.exports = new ImagemPecaController();ImagemPecaController.js

@@ -26,11 +26,22 @@ class PecaController {
 
     }
 
+
     async buscar(req, res) {
 
         try {
 
             const peca = await PecaService.buscar(req.params.id);
+
+            if (!peca) {
+
+                return res.status(404).json({
+
+                    erro: "Peça não encontrada."
+
+                });
+
+            }
 
             return res.json(peca);
 
@@ -49,6 +60,45 @@ class PecaController {
         }
 
     }
+
+
+    async buscarPorSlug(req, res) {
+
+        try {
+
+            const peca =
+                await PecaService.buscarPorSlug(
+                    req.params.slug
+                );
+
+            if (!peca) {
+
+                return res.status(404).json({
+
+                    erro: "Peça não encontrada."
+
+                });
+
+            }
+
+            return res.json(peca);
+
+        }
+
+        catch (erro) {
+
+            console.error(erro);
+
+            return res.status(500).json({
+
+                erro: "Erro ao buscar peça."
+
+            });
+
+        }
+
+    }
+
 
     async criar(req, res) {
 
@@ -70,7 +120,8 @@ class PecaController {
 
             };
 
-            const peca = await PecaService.criar(dados);
+            const peca =
+                await PecaService.criar(dados);
 
             return res.status(201).json(peca);
 
@@ -89,6 +140,7 @@ class PecaController {
         }
 
     }
+
 
     async atualizar(req, res) {
 
@@ -110,13 +162,14 @@ class PecaController {
 
             };
 
-            const peca = await PecaService.atualizar(
+            const peca =
+                await PecaService.atualizar(
 
-                req.params.id,
+                    req.params.id,
 
-                dados
+                    dados
 
-            );
+                );
 
             return res.json(peca);
 
@@ -136,11 +189,14 @@ class PecaController {
 
     }
 
+
     async excluir(req, res) {
 
         try {
 
-            await PecaService.excluir(req.params.id);
+            await PecaService.excluir(
+                req.params.id
+            );
 
             return res.status(204).send();
 

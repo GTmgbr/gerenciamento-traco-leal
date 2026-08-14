@@ -10,6 +10,9 @@ const upload =
 const ArquivoPecaController =
     require("../controllers/ArquivoPecaController");
 
+
+// Listar arquivos de uma peça
+
 router.get(
 
     "/pecas/:pecaId/arquivos",
@@ -17,6 +20,20 @@ router.get(
     ArquivoPecaController.listar
 
 );
+
+
+// Download de arquivo
+
+router.get(
+
+    "/arquivos/:id/download",
+
+    ArquivoPecaController.baixar
+
+);
+
+
+// Cadastrar arquivo
 
 router.post(
 
@@ -30,6 +47,9 @@ router.post(
 
 );
 
+
+// Excluir arquivo
+
 router.delete(
 
     "/arquivos/:id",
@@ -39,5 +59,6 @@ router.delete(
     ArquivoPecaController.excluir
 
 );
+
 
 module.exports = router;

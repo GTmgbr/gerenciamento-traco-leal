@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
 
+import getBackendUrl from "../../services/url";
+
 function PieceCard({ piece }) {
+
+    const logoUrl =
+        getBackendUrl(
+            `/uploads/clientes/${piece.cliente.logo}`
+        );
+
 
     return (
 
@@ -12,15 +20,15 @@ function PieceCard({ piece }) {
 
         >
 
-            <div className="rounded-xl  bg-white p-6 shadow transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+            <div className="rounded-xl bg-white p-6 shadow transition duration-300 hover:-translate-y-2 hover:shadow-xl">
 
                 <div className="flex justify-center items-center h-36">
 
                     <img
 
-                        src={piece.logo}
+                        src={logoUrl}
 
-                        alt={piece.titulo}
+                        alt={piece.cliente.nome}
 
                         className="max-h-24 object-contain"
 
@@ -29,6 +37,7 @@ function PieceCard({ piece }) {
                 </div>
 
             </div>
+
 
             <div className="mt-4 text-center">
 
